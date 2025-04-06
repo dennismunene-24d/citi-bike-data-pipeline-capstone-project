@@ -60,13 +60,13 @@ Defines flexible variables to make the infrastructure portable and configurable:
 1. **Initialize Terraform**
    ```bash
    terraform init
-2. **Review Execution Plan
+2. **Review Execution Plan**
    '''bash
     terraform plan
-3. **Apply Configuration 
+3. **Apply Configuration** 
    '''bash
     terraform apply
-4. **Destroy Resources (when needed)
+4. **Destroy Resources (when needed)**
     '''bash
     terraform destroy
 ## 🔐 Required IAM Roles
