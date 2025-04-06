@@ -61,13 +61,13 @@ Defines flexible variables to make the infrastructure portable and configurable:
    ```bash
    terraform init
 2. **Review Execution Plan
-  '''bash
+   '''bash
     terraform plan
 3. **Apply Configuration 
-  '''bash
+   '''bash
     terraform apply
 4. **Destroy Resources (when needed)
-   '''bash
+    '''bash
     terraform destroy
 ## 🔐 Required IAM Roles
   - Make sure the service account has the following permissions:
@@ -84,3 +84,5 @@ Defines flexible variables to make the infrastructure portable and configurable:
     - 🔐 Restrict SSH access to trusted IP addresses only
     
     - 🔁 Rotate service account keys regularly
+
+    
