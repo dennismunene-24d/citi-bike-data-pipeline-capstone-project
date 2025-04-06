@@ -64,11 +64,11 @@ Defines flexible variables to make the infrastructure portable and configurable:
    ```bash
    terraform plan
 3. **Apply Configuration** 
-   '''bash
-    terraform apply
+   ```bash
+   terraform apply
 4. **Destroy Resources (when needed)**
-    '''bash
-    terraform destroy
+    ```bash
+   terraform destroy
 ## 🔐 Required IAM Roles
   - Make sure the service account has the following permissions:
   
