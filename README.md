@@ -6,7 +6,9 @@ End-to-end data pipeline for analyzing NYC Citi Bike trip data, including ingest
 
 ## Objective
 To design and implement an end-to-end cloud data pipeline on GCP for ingesting, transforming, and visualizing Citi Bike trip data from Jan 2024 to Mar 2025.
-
+## LINKS TO DATASETS
+        https://s3.amazonaws.com/tripdata/index.html
+        https://citibikenyc.com/system-data
 ## Project Architecture Overview
 
 1. **Infrastructure Provisioning**: Use Terraform to set up GCP resources
