@@ -73,5 +73,6 @@ graph TD
     F --> G[Airflow]
     G --> H[Processed Data]
     H --> D
-    D --> I[dbt Transformations]
+    D --> I[dbt/pyspark Transformations]
     I --> J[Looker Studio] 
+
