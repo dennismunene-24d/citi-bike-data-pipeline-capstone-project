@@ -61,8 +61,8 @@ Defines flexible variables to make the infrastructure portable and configurable:
    ```bash
    terraform init
 2. **Review Execution Plan**
-   '''bash
-    terraform plan
+   ```bash
+   terraform plan
 3. **Apply Configuration** 
    '''bash
     terraform apply
