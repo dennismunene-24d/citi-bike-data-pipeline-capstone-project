@@ -75,3 +75,20 @@ graph TD
     H --> D
     D --> I[dbt Transformations]
     I --> J[Looker Studio]
+
+## Part 2: GCP Project Setup & Service Account Configuration
+
+### 1. Create a New GCP Project
+1. Navigate to [Google Cloud Console](https://console.cloud.google.com/)
+2. Click the project dropdown → **New Project**
+3. Name: `citi-bike-analytics-<your-name>` (e.g., `citi-bike-analytics-john`)
+4. Note your **Project ID** (visible in dashboard)
+
+### 2. Enable Required APIs
+Run these commands in [Cloud Shell](https://shell.cloud.google.com/):
+```bash
+gcloud services enable \
+  compute.googleapis.com \
+  bigquery.googleapis.com \
+  iam.googleapis.com \
+
