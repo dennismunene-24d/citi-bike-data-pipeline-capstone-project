@@ -76,6 +76,52 @@ graph TD
     D --> I[dbt Transformations]
     I --> J[Looker Studio]
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Part 2: GCP Project Setup & Service Account Configuration
 
 ### 1. Create a New GCP Project
