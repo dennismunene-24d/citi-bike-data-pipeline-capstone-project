@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Directory to store the downloaded data (use your home directory or another directory you have access to)
+DATA_DIR="$HOME/data"
+mkdir -p "$DATA_DIR"  # Create the directory if it doesn't exist
+
+# URLs for the ZIP files
+URLS=(
+    "https://s3.amazonaws.com/tripdata/JC-202401-citibike-tripdata.csv.zip"
+    "https://s3.amazonaws.com/tripdata/JC-202402-citibike-tripdata.csv.zip"
+    "https://s3.amazonaws.com/tripdata/JC-202403-citibike-tripdata.csv.zip"
+    "https://s3.amazonaws.com/tripdata/JC-202404-citibike-tripdata.csv.zip"
+    "https://s3.amazonaws.com/tripdata/JC-202405-citibike-tripdata.csv.zip"
+    "https://s3.amazonaws.com/tripdata/JC-202406-citibike-tripdata.csv.zip"
+    "https://s3.amazonaws.com/tripdata/JC-202407-citibike-tripdata.csv.zip"
+    "https://s3.amazonaws.com/tripdata/JC-202408-citibike-tripdata.csv.zip"
+    "https://s3.amazonaws.com/tripdata/JC-202409-citibike-tripdata.csv.zip"
+    "https://s3.amazonaws.com/tripdata/JC-202410-citibike-tripdata.csv.zip"
+    "https://s3.amazonaws.com/tripdata/JC-202411-citibike-tripdata.csv.zip"
+    "https://s3.amazonaws.com/tripdata/JC-202412-citibike-tripdata.csv.zip"
+    "https://s3.amazonaws.com/tripdata/JC-202501-citibike-tripdata.csv.zip"
+    "https://s3.amazonaws.com/tripdata/JC-202502-citibike-tripdata.csv.zip"
+    "https://s3.amazonaws.com/tripdata/JC-202503-citibike-tripdata.csv.zip"
+)
+
+# Loop through the URLs and download and extract the files
+for URL in "${URLS[@]}"; do
+    FILE_NAME=$(basename "$URL")
+    DEST_PATH="$DATA_DIR/$FILE_NAME"
+    
+    echo "Downloading $FILE_NAME..."
+    
+    # Download the file
+    wget -O "$DEST_PATH" "$URL"
+    
+    # Check if the download was successful
+    if [[ $? -eq 0 ]]; then
+        echo "Download successful. Extracting $FILE_NAME..."
+        
+        # Extract the zip file
+        unzip -o "$DEST_PATH" -d "$DATA_DIR"
+        
+        # Check if extraction was successful
+        if [[ $? -eq 0 ]]; then
+            echo "Extraction complete: $FILE_NAME"
+            rm "$DEST_PATH"  # Clean up the ZIP file after extraction
+        else
+            echo "Error: Failed to extract $FILE_NAME"
+        fi
+    else
+        echo "Error: Failed to download $FILE_NAME"
+    fi
+done
+
+echo "All files downloaded and extracted successfully."
