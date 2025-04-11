@@ -62,19 +62,4 @@ Our pipeline will enable data-driven answers to critical questions that impact o
 
 ---
 
-## Technical Implementation
-
-### Infrastructure Diagram
-```mermaid
-graph TD
-    A[Terraform] --> B[GCP Resources]
-    B --> C[GCS Buckets]
-    B --> D[BigQuery]
-    B --> E[Compute Engine]
-    C --> F[Raw Data]
-    F --> G[Airflow]
-    G --> H[Processed Data]
-    H --> D
-    D --> I[dbt/pyspark Transformations]
-    I --> J[Looker Studio] 
 
