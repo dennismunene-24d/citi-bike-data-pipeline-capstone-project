@@ -17,15 +17,7 @@ A production-grade data pipeline that processes Citibike trip data from raw CSVs
 
 ## 🏗️ Architecture
 
-```mermaid
-graph TD
-    A[Download Monthly CSVs] --> B[Verify File Integrity]
-    B --> C[Merge into Single Dataset]
-    C --> D[Process & Transform]
-    D --> E[Upload Parquet to GCS]
-    E --> F[Load to BigQuery*]
-    style F stroke-dasharray: 5 5
-    note["* Manual step in current implementation"]
+
 
 ## 🛠️ Technical Stack
 
