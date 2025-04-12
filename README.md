@@ -35,6 +35,16 @@ To design and implement a scalable data pipeline for:
 
 ---
 
+## 🏗️ Architecture Overview
+```mermaid
+graph LR
+    A[Raw CSVs] --> B(Airflow DAG)
+    B --> C[GCS Bucket]
+    C --> D[BigQuery]
+    D --> E[Looker Studio]
+    style B fill:#f9f,stroke:#333
+
+---
 ## ❓ Problem Statement
 
 Citi Bike NYC generates massive datasets monthly, but:
@@ -45,7 +55,65 @@ Citi Bike NYC generates massive datasets monthly, but:
 - Sustainability and planning insights remain hidden
 
 ---
+## 🚀 Quick Start
 
+Get up and running with the Citi Bike data pipeline quickly!
+
+### ✅ Prerequisites
+
+Before you begin, ensure you have the following installed and configured:
+
+-   **Docker**: [Install Docker](https://docs.docker.com/get-docker/)
+-   **Docker Compose**: [Install Docker Compose](https://docs.docker.com/compose/install/)
+-   **Google Cloud Platform Account**: You'll need a GCP account with billing enabled.
+-   **GCS Bucket**: Create a Google Cloud Storage bucket (e.g., `citibike-data-*`) in your GCP project.
+-   **BigQuery Dataset**: Create a BigQuery dataset within your GCP project to store the processed data.
+-   **GCP Service Account Credentials**: Generate a service account key file with necessary permissions for GCS and BigQuery.
+
+### 🔧 Setup & Deployment
+
+Follow these steps to set up and deploy the pipeline:
+
+1.  **Clone the Repository:**
+
+    ```bash
+    git clone [https://github.com/your-repo/citibike-pipeline.git](https://github.com/your-repo/citibike-pipeline.git)
+    cd citibike-pipeline
+    ```
+
+2.  **Prepare Credentials Directory:**
+
+    ```bash
+    mkdir -p /home/denis/auth_keys
+    cp path/to/service-account.json /home/denis/auth_keys/keys.json
+    ```
+
+    **Note:** Replace `path/to/service-account.json` with the actual path to your downloaded GCP service account key file.
+
+3.  **Start the Services:**
+
+    ```bash
+    docker-compose up -d --build
+    ```
+
+    This command will build the Docker images and start the Airflow webserver and scheduler in detached mode.
+
+### Access the Applications:
+
+-   **Airflow UI**: Open your web browser and navigate to `http://localhost:8080`. Use `admin` for both the username and password for the initial login.
+-   **Jupyter Notebook**: Open your web browser and navigate to `http://localhost:8888`. You may need to find the token from the container logs if prompted.
+
+## 🔄 Pipeline DAGs
+
+The Airflow pipeline consists of the following Directed Acyclic Graphs (DAGs):
+
+| DAG File                     | Description                                 | Output                                    |
+| ---------------------------- | ------------------------------------------- | ----------------------------------------- |
+| `citibike_data_pipeline.py`  | Downloads and verifies the raw data files. | `/home/denis/data/*.csv`                  |
+| `merge_citibike_data.py`     | Merges multiple monthly data files.       | `/opt/notebooks/merged_data.csv`          |
+| `process_citibike_data.py`   | Cleans, transforms, and uploads data to GCS. | `gs://your-bucket/processed_data/`       |
+
+---
 ## 🧠 Business Questions Answered
 
 - **Temporal Trends**: When are bikes most used (peak hours/days/seasons)?
@@ -77,7 +145,3 @@ Citi Bike NYC generates massive datasets monthly, but:
 - Distance and speed calculations are temporarily removed to ensure compatibility
 
 ---
-
-## 🛠️ View Definition (BigQuery)
-
-A cleaned-up version of the analytical view omitting unsupported geographic calculations can be found in:
