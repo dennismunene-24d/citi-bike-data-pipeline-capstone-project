@@ -1,0 +1,116 @@
+version: '3.8'
+
+volumes:
+  conda-envs:
+  airflow-data:
+  postgres-data:
+  auth-keys:
+
+services:
+  analytics:
+    image: continuumio/anaconda3:latest
+    volumes:
+      - ./notebooks:/opt/notebooks
+      - ./data:/opt/data
+      - /home/denis/data:/data
+      - conda-envs:/opt/conda/envs
+    ports:
+      - "8888:8888"
+    command: >
+      /bin/bash -c "conda install -y -c conda-forge pandas numpy &&
+      jupyter notebook --notebook-dir=/opt/notebooks --ip='*' --port=8888 --no-browser --allow-root --NotebookApp.token=''"
+
+  postgres:
+    image: postgres:15
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: airflow
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow -d airflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  airflow-init:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    user: "${AIRFLOW_UID:-50000}:0"
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      - AIRFLOW__CORE__FERNET_KEY=lnLNrxuy803aSU2cDVYuYUXm2p4S6iwBG_EG3fQLNAc=
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./scripts:/opt/airflow/scripts
+      - ./logs:/opt/airflow/logs
+      - /home/denis/auth_keys:/opt/airflow/auth_keys:ro
+      - airflow-data:/opt/airflow
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      bash -c "pip install -r /opt/airflow/requirements.txt &&
+      airflow db init &&
+      airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com || true"
+
+  airflow-webserver:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    user: "${AIRFLOW_UID:-50000}:0"
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      - AIRFLOW__CORE__FERNET_KEY=lnLNrxuy803aSU2cDVYuYUXm2p4S6iwBG_EG3fQLNAc=
+      - AIRFLOW__WEBSERVER__RBAC=False
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/airflow/auth_keys/keys.json
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./scripts:/opt/airflow/scripts
+      - ./logs:/opt/airflow/logs
+      - ./notebooks:/opt/notebooks
+      - ./data:/home/denis/data
+      - /home/denis/auth_keys:/opt/airflow/auth_keys:ro
+      - airflow-data:/opt/airflow
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+    command: >
+      bash -c "airflow webserver"
+
+  airflow-scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    user: "${AIRFLOW_UID:-50000}:0"
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      - AIRFLOW__CORE__FERNET_KEY=lnLNrxuy803aSU2cDVYuYUXm2p4S6iwBG_EG3fQLNAc=
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/airflow/auth_keys/keys.json
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./scripts:/opt/airflow/scripts
+      - ./logs:/opt/airflow/logs
+      - /home/denis/auth_keys:/opt/airflow/auth_keys:ro
+      - airflow-data:/opt/airflow
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+    command: >
+      bash -c "airflow scheduler"
+
+networks:
+  default:
+    name: airflow-network

@@ -1,0 +1,35 @@
+# 1. Create .env file with proper permissions (no sudo needed)
+echo "AIRFLOW_UID=$(id -u)" > .env
+
+# 2. Create required directories
+mkdir -p ./dags ./logs
+
+# 3. Set permissions (for development only)
+sudo chmod -R 777 ./logs
+
+# 4. Start PostgreSQL
+docker-compose up -d postgres
+
+# 5. Wait for PostgreSQL to be ready (30-60 seconds)
+sleep 30
+
+# 6. Initialize Airflow database
+docker-compose run --rm airflow-webserver airflow db init
+
+# 7. Create admin user (optional but recommended)
+docker-compose run --rm airflow-webserver airflow users create \
+    --username admin \
+    --password admin \
+    --firstname Admin \
+    --lastname User \
+    --role Admin \
+    --email admin@example.com
+
+# 8. Start all services
+docker-compose up -d
+
+# 9. Verify services are running
+docker ps
+
+# 10. Check logs if needed
+docker-compose logs -f airflow-webserver
