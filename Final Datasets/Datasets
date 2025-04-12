@@ -1,5 +1,16 @@
-Once you run the DAGs on airflow successfully these are the parquet and csv files that you will get
+## 📂 Output Files
 
-##  GOOGLE DRIVE LINK 
+After successfully running the Airflow DAGs, you'll obtain these processed files:
 
-https://drive.google.com/drive/folders/1gMYdxTEujewAyrLcDdTgVHyIHtK9SW35 
+### Processed Data Files
+- **Merged CSV**: 
+  - Location: `/home/denis/data/merged_citibike_trips.csv`
+  - Contains all combined trip records
+- **Processed Parquet**:
+  - Local: `/home/denis/data/processed_citibike_data.parquet` 
+  - Cloud: `gs://citibike-data-*/processed_data/processed_citibike_data.parquet`
+
+### Sample Outputs
+[View example output files on Google Drive](https://drive.google.com/drive/folders/1gMYdxTEujewAyrLcDdTgVHyIHtK9SW35)
+
+File Structure in Drive:
