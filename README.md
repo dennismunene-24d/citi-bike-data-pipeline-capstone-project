@@ -1,65 +1,83 @@
-# Citi Bike NYC: A Cloud-Native Data Pipeline to Analyze Urban Mobility Patterns
+# 🚲 Citi Bike NYC: Cloud-Native Data Pipeline for Urban Mobility Insights
 
-![Citi Bike Logo](https://citibikenyc.com/assets/images/citi-bike-logo.png)
-
-End-to-end data pipeline for analyzing NYC Citi Bike trip data, including ingestion, transformation, and visualization using various cloud technologies.
-
-## Objective
-To design and implement an end-to-end cloud data pipeline on GCP for ingesting, transforming, and visualizing Citi Bike trip data from Jan 2024 to Mar 2025.
-## LINKS TO DATASETS
-        https://s3.amazonaws.com/tripdata/index.html
-        https://citibikenyc.com/system-data
-## Project Architecture Overview
-
-1. **Infrastructure Provisioning**: Use Terraform to set up GCP resources
-2. **Data Ingestion**: Download and process monthly Citi Bike trip data
-3. **Orchestration**: Use Airflow to schedule and manage the pipeline
-4. **Data Warehouse**: Store and optimize data in BigQuery
-5. **Transformations**: Implement data transformations
-6. **Visualization**: Create dashboards in Looker Studio
+This project presents an end-to-end cloud-native data pipeline for analyzing **Citi Bike NYC** trip data from **January 2024 to March 2025**, powered by **Google Cloud Platform (GCP)**. The solution ingests, processes, and visualizes bike-sharing data to uncover patterns in urban mobility and support data-driven transportation planning.
 
 ---
 
-## Problem Description
+## 🎯 Objective
 
-### Problem Statement
-New York City's Citi Bike system generates vast amounts of trip data that can reveal valuable insights about urban mobility, but this data remains underutilized because:
+To design and implement a scalable data pipeline for:
 
-- **Data is fragmented** across monthly files in different formats
-- **No centralized system** exists to analyze long-term trends
-- **Manual analysis is time-consuming** and doesn't scale
-- **Key sustainability insights remain hidden** in unstructured data
-
-### Business Questions We'll Solve
-Our pipeline will enable data-driven answers to critical questions that impact operations, planning, and sustainability goals:
-
-#### Temporal Patterns
-- When are bikes most heavily used? (Peak hours/days/seasons)
-- How does usage differ between members and casual riders?
-- How many car trips are being replaced by bike share? (emissions impact)
-
-#### Geospatial Analysis
-- Which stations are most popular and why?
-- What are the most common routes between stations?
-- Where do bike shortages/surpluses typically occur?
-
-#### Operational Efficiency
-- What's the average trip duration/distance?
-- How does weather affect ridership?
-- Which stations need rebalancing most frequently?
-
-### The Bigger Picture: Why This Matters
-
-#### Environmental Benefits
-- **Carbon Emission Reduction**: Each bike trip replaces 0.5-2 kg of CO₂ compared to car trips
-- **Fossil Fuel Transition**: Supports NYC's 30x30 climate goal by providing zero-emission transport
-- **Last-Mile Solution**: Reduces congestion by connecting transit hubs to final destinations
-
-#### Public Health Impact
-- **Chronic Disease Prevention**: Regular cycling reduces risks of obesity (+17% lower BMI), diabetes (-20% risk), and cardiovascular disease (-24% risk)
-- **Mental Health Benefits**: Active commuters report 40% lower stress levels
-- **Equitable Access**: Bike share provides affordable transport in transit deserts
+- Ingesting monthly Citi Bike trip datasets
+- Performing transformations for analytical readiness
+- Visualizing key metrics and trends in **Looker Studio**
 
 ---
 
+## 📦 Data Sources
 
+- 🗃️ [Citi Bike S3 Archive](https://s3.amazonaws.com/tripdata/index.html)  
+- 📊 [Citi Bike NYC System Data](https://citibikenyc.com/system-data)
+
+---
+
+## 🏗️ Project Architecture
+- Each different part of the project architecture will be found in the following folders airflow datapipelines and terraform
+
+| Layer                | Tool/Technology             |
+|---------------------|-----------------------------|
+| Infrastructure      | Terraform (GCP provisioning)|
+| Data Ingestion      | Python, Cloud Storage       |
+| Orchestration       | Apache Airflow              |
+| Data Warehouse      | BigQuery                    |
+| Transformation      | SQL (BigQuery Views)        |
+| Visualization       | Looker Studio               |
+
+---
+
+## ❓ Problem Statement
+
+Citi Bike NYC generates massive datasets monthly, but:
+
+- Data is fragmented across multiple CSVs
+- Long-term analysis is difficult without centralization
+- Manual insights are time-consuming and don’t scale
+- Sustainability and planning insights remain hidden
+
+---
+
+## 🧠 Business Questions Answered
+
+- **Temporal Trends**: When are bikes most used (peak hours/days/seasons)?
+- **User Segmentation**: How do member and casual rider patterns differ?
+- **Geospatial Insights**: Which stations/routes are most popular?
+- **Efficiency Metrics**: What is the average trip duration and usage by time of day?
+- **Sustainability Impact**: How many car trips are replaced, and what’s the CO₂ reduction?
+
+---
+
+##### 📈 Dashboard (Looker Studio)
+
+#### Explore the interactive dashboard here:  
+🔗 [Looker Studio Report](https://lookerstudio.google.com/reporting/7020aeb2-cede-4b96-b1c3-3354c403f2b5/page/FJoGF)
+
+### 📌 Highlights
+
+- Peak usage by hour, day, and season
+- Breakdown by membership type
+- Top station pairings and trip volumes
+- Weekend vs weekday behavior
+- Duration distribution and trip category
+
+### ⚙️ How It Works
+
+- A BigQuery view `vw_citibike_looker_ready` is created to prepare data for reporting
+- The view is connected to **Looker Studio** as the data source
+- Custom fields, aggregations, and filters are applied for visualization
+- Distance and speed calculations are temporarily removed to ensure compatibility
+
+---
+
+## 🛠️ View Definition (BigQuery)
+
+A cleaned-up version of the analytical view omitting unsupported geographic calculations can be found in:
