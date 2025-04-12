@@ -34,16 +34,6 @@ To design and implement a scalable data pipeline for:
 | Visualization       | Looker Studio               |
 
 ---
-
-## 🏗️ Architecture Overview
-```mermaid
-graph LR
-    A[Raw CSVs] --> B(Airflow DAG)
-    B --> C[GCS Bucket]
-    C --> D[BigQuery]
-    D --> E[Looker Studio]
-    style B fill:#f9f,stroke:#333
-
 ---
 ## ❓ Problem Statement
 
