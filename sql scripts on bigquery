@@ -1,0 +1,60 @@
+CREATE OR REPLACE VIEW `stellar-mercury-455917-d9.citibike_analytics.vw_citibike_looker_ready` AS
+SELECT
+  ride_id,
+  rideable_type,
+  TIMESTAMP_MICROS(CAST(started_at / 1000 AS INT64)) AS started_at_ts,
+  TIMESTAMP_MICROS(CAST(ended_at / 1000 AS INT64)) AS ended_at_ts,
+  
+  start_station_name,
+  start_station_id,
+  end_station_name,
+  end_station_id,
+  
+  start_lat,
+  start_lng,
+  end_lat,
+  end_lng,
+
+  member_casual,
+
+  -- Trip Duration
+  trip_duration_seconds,
+  ROUND(trip_duration_seconds / 60.0, 2) AS trip_duration_minutes,
+
+  -- Date & Time Breakdown
+  FORMAT_TIMESTAMP('%A', TIMESTAMP_MICROS(CAST(started_at / 1000 AS INT64))) AS day_of_week,
+  EXTRACT(HOUR FROM TIMESTAMP_MICROS(CAST(started_at / 1000 AS INT64))) AS hour_of_day,
+  EXTRACT(MONTH FROM TIMESTAMP_MICROS(CAST(started_at / 1000 AS INT64))) AS month,
+  EXTRACT(YEAR FROM TIMESTAMP_MICROS(CAST(started_at / 1000 AS INT64))) AS year,
+  CASE 
+    WHEN EXTRACT(DAYOFWEEK FROM TIMESTAMP_MICROS(CAST(started_at / 1000 AS INT64))) IN (1, 7) THEN TRUE
+    ELSE FALSE
+  END AS is_weekend,
+
+  -- Derived Fields
+  CONCAT(start_station_name, ' to ', end_station_name) AS station_pair,
+
+  -- Categorization
+  CASE 
+    WHEN trip_duration_seconds <= 600 THEN 'short'
+    WHEN trip_duration_seconds <= 1800 THEN 'medium'
+    ELSE 'long'
+  END AS duration_category,
+
+  CASE 
+    WHEN hour_of_day BETWEEN 5 AND 11 THEN 'morning'
+    WHEN hour_of_day BETWEEN 12 AND 16 THEN 'afternoon'
+    WHEN hour_of_day BETWEEN 17 AND 20 THEN 'evening'
+    ELSE 'night'
+  END AS time_of_day,
+
+  CASE 
+    WHEN month IN (12, 1, 2) THEN 'Winter'
+    WHEN month IN (3, 4, 5) THEN 'Spring'
+    WHEN month IN (6, 7, 8) THEN 'Summer'
+    WHEN month IN (9, 10, 11) THEN 'Fall'
+  END AS season
+
+FROM
+  `stellar-mercury-455917-d9.citibike_analytics.processed_citibike_data`;
+
