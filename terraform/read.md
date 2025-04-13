@@ -65,56 +65,39 @@ variable "vm_config" {
   }
 }
 
-� Deployment Workflow
-1. Prerequisites
+## � Deployment Workflow
+# 1. Prerequisites
 Terraform v1.0+ installed
 
 GCP service account with required roles
 
 Valid credentials JSON in auth_key/keys.json
 
-2. Initialize Terraform
+# 2. Initialize Terraform
 bash
 Copy
 terraform init
-3. Review Execution Plan
+# 3. Review Execution Plan
 bash
 Copy
 terraform plan
-4. Apply Configuration
+# 4. Apply Configuration
 bash
 Copy
 terraform apply
-5. Destroy Resources (when needed)
+# 5. Destroy Resources (when needed)
 bash
 Copy
 terraform destroy
-🔐 IAM Requirements
+## 🔐 IAM Requirements
 The service account (citi-bike-capstone-project@...) requires these roles:
 
-Role	Purpose
-roles/compute.instanceAdmin.v1	VM creation/management
-roles/iam.serviceAccountUser	Service account permissions
-roles/serviceusage.serviceUsageConsumer	API enablement
-roles/storage.admin	Cloud Storage access
-roles/bigquery.admin	BigQuery dataset management
-💡 Best Practices
-Version Control: Never commit credential files (keys.json)
-
-Environment Separation: Use different variable files for dev/staging/prod
-
-State Management: Configure remote state storage (GCS recommended)
-
-Variable Defaults: Set sensible defaults but allow overrides
-
-Tagging: Include environment tags on all resources
-
-🛠️ Troubleshooting
-Authentication Errors: Verify service account has correct permissions
-
-Quota Issues: Check your GCP project quotas
-
-Provider Errors: Run terraform providers to verify plugin versions
+#Role	Purpose
+  - roles/compute.instanceAdmin.v1	VM creation/management
+  - roles/iam.serviceAccountUser	Service account permissions
+  - roles/serviceusage.serviceUsageConsumer	API enablement
+  - roles/storage.admin	Cloud Storage access
+  - roles/bigquery.admin	BigQuery dataset management
 
 
 
