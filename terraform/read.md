@@ -1,88 +1,121 @@
-# Terraform Part 2: Infrastructure Provisioning on GCP
+# 🚲 Terraform: GCP Infrastructure Provisioning for Citi Bike Data Pipeline
 
-This section outlines the Terraform configuration used to provision the infrastructure for the Citi Bike data pipeline on Google Cloud Platform (GCP).
+This Terraform project provisions compute infrastructure for a data analytics pipeline using the Citi Bike dataset on **Google Cloud Platform (GCP)**. It deploys a VM configured for Docker-based data processing.
 
-## 📁 Directory Structure
-citi-bike-terraform/
-├── auth_key/
-│ └── keys.json # Service account credentials
-├── main.tf # Primary resource definitions
-├── provider.tf # Provider configuration
-├── variables.tf # Input variables
-└── README.md # This file
+---
+
+## 📁 Project Structure
 
 
-## 📄 main.tf – Compute Engine Instance Configuration
+---
 
-This file defines the virtual machine (VM) used for data processing.
+## ⚙️ Core Configuration Files
 
-- **VM Naming**: Includes environment prefix (e.g., dev, prod)
-- **Machine Type**: e2-standard-4
-- **Boot Disk**: Ubuntu 22.04 LTS, 30GB
-- **Service Account**: `citi-bike-capstone-project@stellar-mercury-455917-d9.iam.gserviceaccount.com`
+### 📄 `provider.tf` – GCP Provider Setup
 
-**Startup Script Installs**:
-- Python
-- Docker
-- Git
-- Google Cloud BigQuery client library
+Configures the Google Cloud provider:
 
-**Features**:
-- Enables OS Login
-- Starts Docker automatically
+- Uses `hashicorp/google` provider version `~> 6.27.0`
+- Authenticates using a service account JSON key
+- Sets default project and region/zone
 
-## 📄 provider.tf – GCP Provider Configuration
+---
 
-This file specifies the Terraform provider and authentication method.
+### 📄 `main.tf` – Compute Resources
 
-- **Provider**: `hashicorp/google` (version 6.27.0)
-- **Authentication**: JSON key file (`auth_key/keys.json`)
+Defines the VM instance used for data processing:
 
-**Configuration Includes**:
-- GCP Project ID
-- Region
-- Zone
+- **Instance Name**: `{environment}-citi-bike-processor` (e.g., `dev-citi-bike-processor`)
+- **Machine Type**: `e2-standard-4` (4 vCPUs, 16 GB RAM)
+- **OS**: Ubuntu 22.04 LTS
+- **Disk**: 30 GB boot disk
+- **Service Account**:  
+  `citi-bike-capstone-project@stellar-mercury-455917-d9.iam.gserviceaccount.com`
+- **Features**:
+  - OS Login enabled
+  - Docker auto-start via startup script
+  - Network tags for firewall rules
 
-## 📄 variables.tf – Reusable Variables
+---
 
-Defines flexible variables to make the infrastructure portable and configurable:
+### 📄 `variables.tf` – Customizable Parameters
 
-- `project_id`: GCP project identifier
-- `credentials_file`: Path to your JSON service account key
-- `region`: GCP region for resource deployment
-- `zone`: GCP zone for VM placement
-- `environment`: Deployment environment (dev, staging, prod)
-- `service_account_email`: IAM service account email
-- `vm_config`: Optional object to override VM specs
+```hcl
+variable "project_id" {
+  description = "GCP Project ID"
+  default     = "stellar-mercury-455917-d9"
+}
 
-## ⚙️ Deployment Steps
+variable "environment" {
+  description = "Deployment environment (dev/staging/prod)"
+  default     = "dev"
+}
 
-1. **Initialize Terraform**
-   ```bash
-   terraform init
-2. **Review Execution Plan**
-   ```bash
-   terraform plan
-3. **Apply Configuration** 
-   ```bash
-   terraform apply
-4. **Destroy Resources (when needed)**
-    ```bash
-   terraform destroy
-## 🔐 Required IAM Roles
-  - Make sure the service account has the following permissions:
-  
-  - roles/compute.instanceAdmin.v1
-  
-  - roles/iam.serviceAccountUser
-  
-  - roles/serviceusage.serviceUsageConsumer
+variable "vm_config" {
+  description = "Customizable VM specifications"
+  type = object({
+    machine_type = string
+    disk_size_gb = number
+    image        = string
+  })
+  default = {
+    machine_type = "e2-standard-4"
+    disk_size_gb = 30
+    image        = "ubuntu-os-cloud/ubuntu-2204-lts"
+  }
+}
 
-## 🔒 Security Best Practices
-    - ❌ Never commit sensitive files like keys.json to Git
-    
-    - 🔐 Restrict SSH access to trusted IP addresses only
-    
-    - 🔁 Rotate service account keys regularly
+� Deployment Workflow
+1. Prerequisites
+Terraform v1.0+ installed
+
+GCP service account with required roles
+
+Valid credentials JSON in auth_key/keys.json
+
+2. Initialize Terraform
+bash
+Copy
+terraform init
+3. Review Execution Plan
+bash
+Copy
+terraform plan
+4. Apply Configuration
+bash
+Copy
+terraform apply
+5. Destroy Resources (when needed)
+bash
+Copy
+terraform destroy
+🔐 IAM Requirements
+The service account (citi-bike-capstone-project@...) requires these roles:
+
+Role	Purpose
+roles/compute.instanceAdmin.v1	VM creation/management
+roles/iam.serviceAccountUser	Service account permissions
+roles/serviceusage.serviceUsageConsumer	API enablement
+roles/storage.admin	Cloud Storage access
+roles/bigquery.admin	BigQuery dataset management
+💡 Best Practices
+Version Control: Never commit credential files (keys.json)
+
+Environment Separation: Use different variable files for dev/staging/prod
+
+State Management: Configure remote state storage (GCS recommended)
+
+Variable Defaults: Set sensible defaults but allow overrides
+
+Tagging: Include environment tags on all resources
+
+🛠️ Troubleshooting
+Authentication Errors: Verify service account has correct permissions
+
+Quota Issues: Check your GCP project quotas
+
+Provider Errors: Run terraform providers to verify plugin versions
+
+
 
     
